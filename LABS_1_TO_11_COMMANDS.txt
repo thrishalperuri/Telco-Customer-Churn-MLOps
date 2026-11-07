@@ -1,0 +1,104 @@
+CHURN PREDICTION MLOPS — LABS 1–11 QUICK START
+================================================
+
+IMPORTANT
+- Open this extracted folder in VS Code (the folder containing config.yaml and Dockerfile).
+- Use Python 3.11 for the Docker/API environment. Your existing churn venv can remain for Labs 7–9.
+- Do not delete deployment/model.pkl, deployment/preprocessor.pkl, or deployment/model_metadata.json.
+- This package is reconstructed from the supplied ZIP. Missing optional model files are not fabricated.
+- Lab 11 Docker/Kubernetes commands assume Docker Desktop is installed and running.
+- The prebuilt deployment bundle is included so you can start the Lab 11 API without re-running MLflow.
+
+A. OPEN PROJECT
+1. Extract the ZIP to a normal folder, e.g. C:\Users\user\Desktop\churn-prediction-labs1-11
+2. VS Code > File > Open Folder > select that folder.
+3. Open Terminal > New Terminal. Confirm:
+   Get-Location
+   Test-Path .\config.yaml
+   Test-Path .\Dockerfile
+
+B. CREATE / ACTIVATE PYTHON ENVIRONMENT (PowerShell)
+If reusing your existing environment:
+   & C:\venvs\churn\Scripts\Activate.ps1
+   python --version
+
+If setting up a separate environment:
+   py -3.11 -m venv .venv
+   .\.venv\Scripts\Activate.ps1
+   python -m pip install --upgrade pip
+   pip install -r requirements.txt
+
+C. LABS 7–9 — RUN PIPELINE
+Run from the project root (same folder as config.yaml):
+   python src/mlops_pipeline/churn_prediction_pipeline.py
+
+Lab 9 failure injection (run only after the normal pipeline succeeds):
+   python src/mlops_pipeline/10_failure_injection.py
+
+NOTE: Failure-injection tests deliberately alter files temporarily and restore them. Do not stop the process mid-test. Run the normal pipeline again after tests if any artifact appears missing.
+
+D. LAB 11 — CHECK THE DEPLOYMENT BUNDLE
+   Test-Path .\deployment\model.pkl
+   Test-Path .\deployment\preprocessor.pkl
+   Test-Path .\deployment\model_metadata.json
+
+All three should return True. If any returns False, stop and do not build the Docker image yet. Re-run the pipeline/prepare-deployment flow using your configured MLflow database.
+
+E. LAB 11 — DOCKER
+Make sure Docker Desktop is running, then:
+   docker version
+   docker info
+   docker build -t churn-prediction-api:lab11 .
+   docker run --name churn-api -p 8000:8000 churn-prediction-api:lab11
+
+Keep that terminal running. In a SECOND VS Code terminal:
+   Invoke-RestMethod http://localhost:8000/
+   Invoke-RestMethod http://localhost:8000/health
+   Invoke-RestMethod http://localhost:8000/metadata
+
+Interactive API docs:
+   http://localhost:8000/docs
+
+Stop the container with Ctrl+C in the first terminal, then:
+   docker rm -f churn-api
+
+If port 8000 is already in use:
+   docker run --name churn-api -p 8001:8000 churn-prediction-api:lab11
+Then open http://localhost:8001/docs.
+
+F. RUN TESTS
+With the project Python environment activated and dependencies installed:
+   python -m pip install -r requirements-api.txt
+   python -m pip install pytest httpx
+   pytest tests/test_api.py -v
+
+Container-specific test (requires a built image and a running API; read test file first to confirm expected URL/environment):
+   pytest tests/test_local_vs_container.py -v
+
+G. LAB 11 — KUBERNETES (OPTIONAL FINAL SECTION)
+Only proceed after Docker API works. Kubernetes must be enabled in Docker Desktop:
+Settings > Kubernetes > Enable Kubernetes (if this option is available in your Docker Desktop version).
+
+From project root:
+   kubectl version --client
+   kubectl apply -f k8s/deployment.yaml
+   kubectl apply -f k8s/service.yaml
+   kubectl get deployments
+   kubectl get pods
+   kubectl get services
+
+If the YAML uses a local image, ensure the image name matches:
+   docker images
+
+Inspect resources before deleting anything. Cleanup only after documenting results:
+   kubectl delete -f k8s/service.yaml
+   kubectl delete -f k8s/deployment.yaml
+
+H. USEFUL CHECKS
+   docker ps
+   docker logs churn-api
+   docker images
+   python -m py_compile src/mlops_pipeline/10_failure_injection.py
+   python -m py_compile api/main.py
+
+Do not claim a test passed unless its command actually completes successfully on your machine.

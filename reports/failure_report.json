@@ -1,0 +1,115 @@
+{
+    "stage": "Failure Handling and Recovery",
+    "repetitions": 3,
+    "runs": [
+        {
+            "repetition": 1,
+            "results": [
+                {
+                    "scenario": "missing_data",
+                    "expected": "HALT",
+                    "actual": "HALT",
+                    "passed": true
+                },
+                {
+                    "scenario": "invalid_datatype",
+                    "expected": "HALT",
+                    "actual": "HALT",
+                    "passed": true
+                },
+                {
+                    "scenario": "schema_mismatch",
+                    "expected": "HALT",
+                    "actual": "HALT",
+                    "passed": true
+                },
+                {
+                    "scenario": "preprocessing_inconsistency",
+                    "expected": "HALT",
+                    "actual": "HALT",
+                    "passed": true
+                },
+                {
+                    "scenario": "missing_model_artifact",
+                    "expected": "RECOVER",
+                    "actual": "NOT_TESTED",
+                    "passed": false
+                }
+            ],
+            "passed": false
+        },
+        {
+            "repetition": 2,
+            "results": [
+                {
+                    "scenario": "missing_data",
+                    "expected": "HALT",
+                    "actual": "HALT",
+                    "passed": true
+                },
+                {
+                    "scenario": "invalid_datatype",
+                    "expected": "HALT",
+                    "actual": "HALT",
+                    "passed": true
+                },
+                {
+                    "scenario": "schema_mismatch",
+                    "expected": "HALT",
+                    "actual": "HALT",
+                    "passed": true
+                },
+                {
+                    "scenario": "preprocessing_inconsistency",
+                    "expected": "HALT",
+                    "actual": "HALT",
+                    "passed": true
+                },
+                {
+                    "scenario": "missing_model_artifact",
+                    "expected": "RECOVER",
+                    "actual": "NOT_TESTED",
+                    "passed": false
+                }
+            ],
+            "passed": false
+        },
+        {
+            "repetition": 3,
+            "results": [
+                {
+                    "scenario": "missing_data",
+                    "expected": "HALT",
+                    "actual": "HALT",
+                    "passed": true
+                },
+                {
+                    "scenario": "invalid_datatype",
+                    "expected": "HALT",
+                    "actual": "HALT",
+                    "passed": true
+                },
+                {
+                    "scenario": "schema_mismatch",
+                    "expected": "HALT",
+                    "actual": "HALT",
+                    "passed": true
+                },
+                {
+                    "scenario": "preprocessing_inconsistency",
+                    "expected": "HALT",
+                    "actual": "HALT",
+                    "passed": true
+                },
+                {
+                    "scenario": "missing_model_artifact",
+                    "expected": "RECOVER",
+                    "actual": "NOT_TESTED",
+                    "passed": false
+                }
+            ],
+            "passed": false
+        }
+    ],
+    "overall_status": "FAILED"
+}
